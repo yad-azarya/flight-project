@@ -38,14 +38,15 @@ app.get('/api/indicators/latest', async (req: Request, res: Response) => {
   }
 });
 
-// שורת החיבור הייעודית שלך ל-MongoDB Atlas בענן!
+
+
 const MONGO_URI = process.env.MONGO_URI || '';
 
 const PORT = process.env.PORT || 5000;
 
 mongoose.connect(MONGO_URI)
   .then(() => {
-    console.log('Connected to MongoDB Atlas (Cloud) Successfully!');
-    app.listen(PORT, () => console.log('Server running on port ${PORT}'));
+    console.log('Connected to local MongoDB Successfully!');
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch(err => console.error('MongoDB connection error:', err));

@@ -11,7 +11,7 @@ app.use(express.json());
 // הגדרת מבנה הנתונים ב-MongoDB לפי דרישות הפרויקט
 const IndicatorSchema = new mongoose.Schema({
   altitude: { type: Number, min: 0, max: 3000, required: true },
-  hsi: { type: Number, min: 0, max: 360, required: true },
+  his: { type: Number, min: 0, max: 360, required: true },
   adi: { type: Number, min: -100, max: 100, required: true },
 });
 
@@ -32,7 +32,7 @@ app.post('/api/indicators', async (req: Request, res: Response) => {
 app.get('/api/indicators/latest', async (req: Request, res: Response) => {
   try {
     const data = await Indicator.findOne().sort({ _id: -1 });
-    res.json(data || { altitude: 0, hsi: 0, adi: 0 });
+    res.json(data || { altitude: 0, his: 0, adi: 0 });
   } catch (error) {
     res.status(500).json({ error: 'שגיאה בשליפת נתונים' });
   }

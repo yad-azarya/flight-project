@@ -55,7 +55,14 @@ function App() {
       <header className="controls">
         <button onClick={() => setViewMode('text')}>TEXT</button>
         <button onClick={() => setViewMode('visual')}>VISUAL</button>
-        <button onClick={() => setIsDialogOpen(true)}>+</button>
+        <button onClick={() => {
+          setFormData({
+            altitude: data.altitude,
+            hsi: data.hsi,
+            adi: data.adi
+          })
+          setIsDialogOpen(true);
+        }}>+</button>
       </header>
 
       {viewMode === 'text' && (

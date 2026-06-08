@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -37,11 +39,13 @@ app.get('/api/indicators/latest', async (req: Request, res: Response) => {
 });
 
 // שורת החיבור הייעודית שלך ל-MongoDB Atlas בענן!
-const MONGO_URI = 'mongodb://admin:admin123@ac-utuqr8k-shard-00-00.b3lxzot.mongodb.net:27017,ac-utuqr8k-shard-00-01.b3lxzot.mongodb.net:27017,ac-utuqr8k-shard-00-02.b3lxzot.mongodb.net:27017/?ssl=true&replicaSet=atlas-qcyp8d-shard-0&authSource=admin&appName=Cluster0';
+const MONGO_URI = process.env.MONGO_URI || '';
+
+const PORT = process.env.PORT || 5000;
 
 mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB Atlas (Cloud) Successfully!');
-    app.listen(5000, () => console.log('Server running on port 5000'));
+    app.listen(PORT, () => console.log('Server running on port ${PORT}'));
   })
   .catch(err => console.error('MongoDB connection error:', err));

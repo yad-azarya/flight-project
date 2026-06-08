@@ -4,15 +4,15 @@ import './App.css';
 
 interface FlightData {
   altitude: number;
-  hsi: number;
+  his: number;
   adi: number;
 }
 
 function App() {
   const [viewMode, setViewMode] = useState<'visual' | 'text'>('visual');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [data, setData] = useState<FlightData>({ altitude: 0, hsi: 0, adi: 0 });
-  const [formData, setFormData] = useState<FlightData>({ altitude: 0, hsi: 0, adi: 0 });
+  const [data, setData] = useState<FlightData>({ altitude: 0, his: 0, adi: 0 });
+  const [formData, setFormData] = useState<any>({ altitude: '', his: '', adi: '' });
 
   const fetchLatestData = async () => {
     try {
@@ -29,8 +29,14 @@ function App() {
 
   const handleSend = async () => {
     try {
-      await axios.post('http://localhost:5000/api/indicators', formData);
-      setData(formData);
+      const finalData = {
+        altitude: formData.altitude.trim() === '' ? data.altitude : Number(formData.altitude),
+        his: formData.his.trim() === '' ? data.his : Number(formData.his),
+        adi: formData.adi.trim() === '' ? data.adi : Number(formData.adi)
+      }
+
+      await axios.post('http://localhost:5000/api/indicators', finalData);
+      setData(finalData);
       setIsDialogOpen(false);
     } catch (error) {
       alert(`שגיאה: ודא שהמשתנים מוגדרים כראוי.
@@ -57,9 +63,9 @@ function App() {
         <button onClick={() => setViewMode('visual')}>VISUAL</button>
         <button onClick={() => {
           setFormData({
-            altitude: data.altitude,
-            hsi: data.hsi,
-            adi: data.adi
+            altitude: '',
+            his: '',
+            adi: ''
           })
           setIsDialogOpen(true);
         }}>+</button>
@@ -68,7 +74,7 @@ function App() {
       {viewMode === 'text' && (
         <div className="text-view">
           <div className="text-card"><h3>Altitude</h3><p>{data.altitude}</p></div>
-          <div className="text-card"><h3>HIS</h3><p>{data.hsi}</p></div>
+          <div className="text-card"><h3>HIS</h3><p>{data.his}</p></div>
           <div className="text-card"><h3>ADI</h3><p>{data.adi}</p></div>
         </div>
       )}
@@ -86,14 +92,14 @@ function App() {
             </div>
           </div>
 
-          <div className="indicator hsi-indicator">
-            <div className="hsi-dial">
+          <div className="indicator his-indicator">
+            <div className="his-dial">
               <span className="deg-0">0</span>
               <span className="deg-90">90</span>
               <span className="deg-180">180</span>
               <span className="deg-270">270</span>
             </div>
-            <div className="hsi-center-arrow">↑</div>
+            <div className="his-center-arrow">↑</div>
           </div>
 
           <div className="indicator adi-indicator" style={{ backgroundColor: getAdiColor(data.adi) }}>
@@ -107,15 +113,24 @@ function App() {
             <h2>הזנת נתונים</h2>
             <div className="input-group">
               <label>Altitude</label>
-              <input type="number" onChange={e => setFormData({...formData, altitude: Number(e.target.value)})} />
+              <input 
+                type="number"
+                value={formData.altitude}
+                onChange={e => setFormData({...formData, altitude: e.target.value})} />
             </div>
             <div className="input-group">
               <label>HIS</label>
-              <input type="number" onChange={e => setFormData({...formData, hsi: Number(e.target.value)})} />
+              <input
+                type="number"
+                value={formData.his}
+                onChange={e => setFormData({...formData, his: e.target.value})} />
             </div>
             <div className="input-group">
               <label>ADI</label>
-              <input type="number" onChange={e => setFormData({...formData, adi: Number(e.target.value)})} />
+              <input
+                type="number"
+                value={formData.adi}
+                onChange={e => setFormData({...formData, adi: e.target.value})} />
             </div>
             <button className="send-btn" onClick={handleSend}>SEND ➡</button>
             <button className="close-btn" onClick={() => setIsDialogOpen(false)}>ביטול</button>

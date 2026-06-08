@@ -63,9 +63,9 @@ function App() {
         <button onClick={() => setViewMode('visual')}>VISUAL</button>
         <button onClick={() => {
           setFormData({
-            altitude: '',
-            his: '',
-            adi: ''
+            altitude: String(data.altitude),
+            his: String(data.his),
+            adi: String(data.adi)
           })
           setIsDialogOpen(true);
         }}>+</button>

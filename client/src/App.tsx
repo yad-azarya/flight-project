@@ -33,7 +33,10 @@ function App() {
       setData(formData);
       setIsDialogOpen(false);
     } catch (error) {
-      alert('שגיאה: ודא ש-Altitude (0-3000), HIS (0-360), ADI (-100-100)');
+      alert(`שגיאה: ודא שהמשתנים מוגדרים כראוי.
+        Altitude (0 - 3,000)
+        HIS (0 - 360)
+        ADI (-100 - 100)`);
     }
   };
 

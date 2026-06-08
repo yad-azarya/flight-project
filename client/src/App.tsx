@@ -87,7 +87,7 @@ function App() {
           </div>
 
           <div className="indicator hsi-indicator">
-            <div className="hsi-dial" style={{ transform: `rotate(${-data.hsi}deg)` }}>
+            <div className="hsi-dial">
               <span className="deg-0">0</span>
               <span className="deg-90">90</span>
               <span className="deg-180">180</span>

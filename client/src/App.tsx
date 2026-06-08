@@ -40,11 +40,14 @@ function App() {
     }
   };
 
-  const getAdiColor = (val: number) => {
-    const percent = Math.max(0, Math.min(100, val));
-    const green = 255 - (percent * 2.55);
-    const blue = percent * 2.55;
-    return `rgb(0, ${green}, ${blue})`;
+  const getAdiColor = (adi: number) => {    
+    if(adi === 100)
+      return `rgb(0, 0, 255)`;
+    else if(adi === 0){
+      return `rgb(0, 255, 0)`;
+    } else {
+      return `rgb(255,255,255)`;
+    }
   };
 
   return (

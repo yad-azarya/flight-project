@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// הגדרת מבנה הנתונים ב-MongoDB לפי דרישות הפרויקט
+// setting up the interface of data for mongoDB
 const IndicatorSchema = new mongoose.Schema({
   altitude: { type: Number, min: 0, max: 3000, required: true },
   his: { type: Number, min: 0, max: 360, required: true },
@@ -17,7 +17,7 @@ const IndicatorSchema = new mongoose.Schema({
 
 const Indicator = mongoose.model('Indicator', IndicatorSchema);
 
-// קליטת נתונים ושמירתם
+// updating the data in mongoDB
 app.post('/api/indicators', async (req: Request, res: Response) => {
   try {
     const newData = new Indicator(req.body);
@@ -28,7 +28,7 @@ app.post('/api/indicators', async (req: Request, res: Response) => {
   }
 });
 
-// שליפת הנתונים העדכניים ביותר
+// getting the latest data
 app.get('/api/indicators/latest', async (req: Request, res: Response) => {
   try {
     const data = await Indicator.findOne().sort({ _id: -1 });

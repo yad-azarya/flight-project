@@ -16,12 +16,13 @@
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-#text-btn {
-  background-color: aqua;
-}
-#visual-btn {
+#clicked-btn {
   background-color: #f4a700;
 }
+#unclicked-btn {
+  background-color: aqua;
+}
+
 #plus-btn {
   background-color: purple;
   color: aliceblue;
@@ -195,6 +196,7 @@ position: absolute;
   border-radius: 20px;
   border: 2px solid #000;
   min-width: 300px;
+  position: relative;
 }
 .input-group {
   display: flex;
@@ -208,10 +210,23 @@ position: absolute;
   border-radius: 5px;
 }
 .send-btn {
-  background-color: #999;
+  color: azure;
+  background-color: rgb(109, 200, 169);
   border: 1px solid #666;
-  padding: 10px 20px;
+  border-radius: 25px;
+  padding: 5px 7px;
   margin-top: 10px;
+  font-size: 20px;
+  width: 80%;
   cursor: pointer;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.687);
 }
-.close-btn { margin-right: 10px; cursor: pointer; }
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+}

@@ -59,13 +59,18 @@ function App() {
   return (
     <div className="App">
       <header className="controls">
-        <button id='text-btn' onClick={() => setViewMode('text')}>TEXT</button>
-        <button id='visual-btn' onClick={() => setViewMode('visual')}>VISUAL</button>
+        <button
+          id = { (viewMode === 'text') ? 'clicked-btn' : 'unclicked-btn' }
+          onClick={() => setViewMode('text')}>TEXT
+        </button>
+        <button
+          id = { (viewMode === 'visual') ? 'clicked-btn' : 'unclicked-btn' }
+          onClick={() => setViewMode('visual')}>VISUAL</button>
         <button id='plus-btn' onClick={() => {
           setFormData({
-            altitude: String(data.altitude),
-            his: String(data.his),
-            adi: String(data.adi)
+            altitude: '',
+            his: '',
+            adi: ''
           })
           setIsDialogOpen(true);
         }}>+</button>
@@ -116,6 +121,13 @@ function App() {
       {isDialogOpen && (
         <div className="dialog-overlay">
           <div className="dialog">
+            
+            <button className="close-btn" onClick={() => setIsDialogOpen(false)}>
+              <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#0095d1">
+                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+              </svg>
+            </button>
+
             <h2>הזנת נתונים</h2>
             <div className="input-group">
               <label>Altitude</label>
@@ -138,8 +150,7 @@ function App() {
                 value={formData.adi}
                 onChange={e => setFormData({...formData, adi: e.target.value})} />
             </div>
-            <button className="send-btn" onClick={handleSend}>SEND ➡</button>
-            <button className="close-btn" onClick={() => setIsDialogOpen(false)}>ביטול</button>
+            <button className="send-btn" onClick={handleSend}>עדכון</button>
           </div>
         </div>
       )}

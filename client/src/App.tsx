@@ -48,20 +48,20 @@ function App() {
 
   const getAdiColor = (adi: number) => {    
     if(adi === 100)
-      return `rgb(0, 0, 255)`;
+      return 'blue';
     else if(adi === 0){
-      return `rgb(0, 255, 0)`;
+      return 'lightgreen';
     } else {
-      return `rgb(255,255,255)`;
+      return 'white';
     }
   };
 
   return (
     <div className="App">
       <header className="controls">
-        <button onClick={() => setViewMode('text')}>TEXT</button>
-        <button onClick={() => setViewMode('visual')}>VISUAL</button>
-        <button onClick={() => {
+        <button id='text-btn' onClick={() => setViewMode('text')}>TEXT</button>
+        <button id='visual-btn' onClick={() => setViewMode('visual')}>VISUAL</button>
+        <button id='plus-btn' onClick={() => {
           setFormData({
             altitude: String(data.altitude),
             his: String(data.his),
@@ -73,9 +73,9 @@ function App() {
 
       {viewMode === 'text' && (
         <div className="text-view">
-          <div className="text-card"><h3>Altitude</h3><p>{data.altitude}</p></div>
-          <div className="text-card"><h3>HIS</h3><p>{data.his}</p></div>
-          <div className="text-card"><h3>ADI</h3><p>{data.adi}</p></div>
+          <div className="text-card altitude-card"><h3>Altitude</h3><p>{data.altitude}</p></div>
+          <div className="text-card his-card"><h3>HIS</h3><p>{data.his}</p></div>
+          <div className="text-card adi-card"><h3>ADI</h3><p>{data.adi}</p></div>
         </div>
       )}
 
@@ -87,7 +87,7 @@ function App() {
             </div>
             <div className="alt-bar">
               <div className="alt-marker" style={{ bottom: `${(data.altitude / 3000) * 100}%` }}>
-                <div className="arrow-left"></div>
+                <div className="arrow-right"></div>
               </div>
             </div>
           </div>
@@ -99,7 +99,13 @@ function App() {
               <span className="deg-180">180</span>
               <span className="deg-270">270</span>
             </div>
-            <div className="his-center-arrow">↑</div>
+            <div className="his-marker" >
+              <div className="arrow-up" ></div>
+            </div>
+            <div className="rotating-container" style={{ transform: `rotate(${data.his}deg)`}}>
+              <div className="rotating-arrow" ></div>
+              <div className="rotating-line"></div>
+            </div>
           </div>
 
           <div className="indicator adi-indicator" style={{ backgroundColor: getAdiColor(data.adi) }}>

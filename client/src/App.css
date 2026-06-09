@@ -4,6 +4,7 @@
   text-align: center;
 }
 
+
 .controls button {
   margin: 0 10px;
   padding: 10px 20px;
@@ -12,6 +13,18 @@
   border: 1px solid #999;
   cursor: pointer;
   font-weight: bold;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+#text-btn {
+  background-color: aqua;
+}
+#visual-btn {
+  background-color: #f4a700;
+}
+#plus-btn {
+  background-color: purple;
+  color: aliceblue;
 }
 
 .text-view, .visual-view {
@@ -23,17 +36,26 @@
 }
 
 .text-card {
-  border: 1px solid #000;
+  border: 2px solid #000;
   border-radius: 50px;
   padding: 20px 40px;
   min-width: 100px;
+}
+
+.altitude-card {
+  border-color: darkorange;
+}
+.his-card {
+  border-color: blue;
+}
+.adi-card {
+  border-color: green;
 }
 
 .indicator {
   position: relative;
 }
 
-/* מחוון גובה */
 .altitude-indicator {
   display: flex;
   height: 300px;
@@ -42,33 +64,41 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-right: 10px;
+  position: absolute;
+  height: 100%;
+  width: 110px;
 }
+
+.alt-scale span {
+  font-size: medium;
+}
+
 .alt-bar {
-  width: 40px;
-  border: 2px solid #000;
+  width: 110px;
+  border: 2px solid #f4a700;
   position: relative;
 }
 .alt-marker {
   position: absolute;
   width: 100%;
-  border-top: 2px solid blue;
+  border-top: 2px solid rgb(0, 242, 255);
   transition: bottom 0.3s;
+  z-index: -2;
 }
-.arrow-left {
+.arrow-right {
   position: absolute;
-  left: -15px;
+  right: -15px;
   top: -8px;
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
-  border-right: 15px solid blue;
+  border-left: 15px solid rgb(0, 242, 255);
 }
 
 
 .his-indicator {
-  width: 200px;
-  height: 200px;
-  border: 2px solid #000;
+  width: 250px;
+  height: 250px;
+  border: 2px solid blue;
   border-radius: 50%;
   position: relative;
   display: flex;
@@ -82,28 +112,74 @@
   border-radius: 50%;
   transition: transform 0.5s;
 }
+
 .his-dial span { position: absolute; font-weight: bold; }
 .deg-0 { top: 10px; left: 50%; transform: translateX(-50%); }
 .deg-90 { right: 10px; top: 50%; transform: translateY(-50%); }
 .deg-180 { bottom: 10px; left: 50%; transform: translateX(-50%); }
 .deg-270 { left: 10px; top: 50%; transform: translateY(-50%); }
 
-.his-center-arrow {
-  font-size: 30px;
-  color: orange;
-  z-index: 10;
+.his-marker {
+  position: absolute;
+  width: 2px;
+  height: 25%;
+  background-color: rgb(0, 242, 255);
+  bottom: 50%;
+  left: 50%;
+  transform: translateX(-50%); 
+}
+.arrow-up {
+position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+  border-bottom: 15px solid rgb(0, 242, 255);
+  border-top: none;
 }
 
-/* מחוון ADI */
+.rotating-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transition: transform 0.5s ease-out;
+  z-index: -12;
+}
+.rotating-arrow {
+  position: absolute;
+  top: 77px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 18px solid #f4a700; 
+  border-bottom: none;
+}
+
+.rotating-line {
+  position: absolute;
+  width: 2px;
+  background-color: #f4a700;
+  top: 12px;
+  height: 65px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
 .adi-indicator {
-  width: 200px;
-  height: 200px;
-  border: 2px solid #000;
+  width: 250px;
+  height: 250px;
+  border: 2px solid green;
   border-radius: 50%;
   transition: background-color 0.5s;
 }
 
-/* מודל (Dialog) */
 .dialog-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;

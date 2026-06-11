@@ -3,159 +3,207 @@ import axios from 'axios';
 import './App.css';
 
 interface FlightData {
-  altitude: number;
-  his: number;
-  adi: number;
+	altitude: number;
+	his: number;
+	adi: number;
 }
 
 function App() {
-  const [viewMode, setViewMode] = useState<'visual' | 'text'>('visual');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [data, setData] = useState<FlightData>({ altitude: 0, his: 0, adi: 0 });
-  const [formData, setFormData] = useState<any>({ altitude: '', his: '', adi: '' });
+	const [viewMode, setViewMode] = useState<'visual' | 'text'>('visual');
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [data, setData] = useState<FlightData>({ altitude: 0, his: 0, adi: 0 });
+	const [formData, setFormData] = useState<any>({ altitude: '', his: '', adi: '' });
 
-  const fetchLatestData = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/indicators/latest');
-      setData(response.data);
-    } catch (error) {
-      console.error('Error fetching data', error);
-    }
-  };
+	const fetchLatestData = async () => {
+		try {
+			const response = await axios.get('http://localhost:5000/api/indicators/latest');
+			setData(response.data);
+		} catch (error) {
+			console.error('Error fetching data', error);
+		}
+	};
 
-  useEffect(() => {
-    fetchLatestData();
-  }, []);
+	useEffect(() => {
+		fetchLatestData();
+	}, []);
 
-  const handleSend = async () => {
-    try {
-      const finalData = {
-        altitude: formData.altitude.trim() === '' ? data.altitude : Number(formData.altitude),
-        his: formData.his.trim() === '' ? data.his : Number(formData.his),
-        adi: formData.adi.trim() === '' ? data.adi : Number(formData.adi)
-      }
+	const getInvalidValuesError = (isAltEmpty: boolean, isHisEmpty: boolean, isAdiEmpty: boolean) => {
+		let errorMsg: string = "שגיאה.";
+		let isInvalidValue : boolean = false;
+		if(!isAltEmpty){
+			let altitude : number = Number(formData.altitude);
+			if(Number.isNaN(altitude)){
+				isInvalidValue = true;
+				errorMsg += "\nהערך של Altitude חייב להיות מספר תקין.";
+			} else{
+				if(altitude > 3000 || altitude < 0){
+					isInvalidValue = true;
+					errorMsg += "\nהערך של Altitude חייב להיות בין 0 ל-3,000.";
+				}
+			}
+		}
+		if(!isHisEmpty){
+			let his : number = Number(formData.his);
+			if(Number.isNaN(his)){
+				isInvalidValue = true;
+				errorMsg += "\nהערך של HIS חייב להיות מספר תקין.";
+			} else{
+				if(his > 360 || his < 0){
+					isInvalidValue = true;
+					errorMsg += "\nהערך של HIS חייב להיות בין 0 ל-360.";
+				}
+			}
+		}
+		if(!isAdiEmpty){
+			let adi : number = Number(formData.adi);
+			if(Number.isNaN(adi)){
+				isInvalidValue = true;
+				errorMsg += "\nהערך של ADI חייב להיות מספר תקין.";
+			} else{
+				if(adi > 100 || adi < -100){
+					isInvalidValue = true;
+					errorMsg += "\nהערך של ADI חייב להיות בין -100 ל-100.";
+				}
+			}
+		}
 
-      await axios.post('http://localhost:5000/api/indicators', finalData);
-      setData(finalData);
-      setIsDialogOpen(false);
-    } catch (error) {
-      alert(`שגיאה: ודא שהמשתנים מוגדרים כראוי.
-        Altitude (0 - 3,000)
-        HIS (0 - 360)
-        ADI (-100 - 100)`);
-    }
-  };
+		if(!isInvalidValue)
+			errorMsg += "\nהתקלה לא זוהתה.אנא נסה שוב או פנה לתמיכה טכנית.";
 
-  const getAdiColor = (adi: number) => {    
-    if(adi === 100)
-      return 'blue';
-    else if(adi === 0){
-      return 'lightgreen';
-    } else {
-      return 'white';
-    }
-  };
+		return errorMsg;
+	}
 
-  return (
-    <div className="App">
-      <header className="controls">
-        <button
-          id = { (viewMode === 'text') ? 'clicked-btn' : 'unclicked-btn' }
-          onClick={() => setViewMode('text')}>TEXT
-        </button>
-        <button
-          id = { (viewMode === 'visual') ? 'clicked-btn' : 'unclicked-btn' }
-          onClick={() => setViewMode('visual')}>VISUAL</button>
-        <button id='plus-btn' onClick={() => {
-          setFormData({
-            altitude: '',
-            his: '',
-            adi: ''
-          })
-          setIsDialogOpen(true);
-        }}>+</button>
-      </header>
+	const handleSend = async () => {
+		let isAltEmpty = formData.altitude.trim() === '';
+		let isHisEmpty = formData.his.trim() === '';
+		let isAdiEmpty = formData.adi.trim() === '';
 
-      {viewMode === 'text' && (
-        <div className="text-view">
-          <div className="text-card altitude-card"><h3>Altitude</h3><p>{data.altitude}</p></div>
-          <div className="text-card his-card"><h3>HIS</h3><p>{data.his}</p></div>
-          <div className="text-card adi-card"><h3>ADI</h3><p>{data.adi}</p></div>
-        </div>
-      )}
+		try {
+			
+			const finalData = {
+				altitude: isAltEmpty ? data.altitude : Number(formData.altitude),
+				his: isHisEmpty ? data.his : Number(formData.his),
+				adi: isAdiEmpty ? data.adi : Number(formData.adi)
+			}
 
-      {viewMode === 'visual' && (
-        <div className="visual-view">
-          <div className="indicator altitude-indicator">
-            <div className="alt-scale">
-              <span>3000</span><span>2000</span><span>1000</span><span>0</span>
-            </div>
-            <div className="alt-bar">
-              <div className="alt-marker" style={{ bottom: `${(data.altitude / 3000) * 100}%` }}>
-                <div className="arrow-right"></div>
-              </div>
-            </div>
-          </div>
+			await axios.post('http://localhost:5000/api/indicators', finalData);
+			setData(finalData);
+			setIsDialogOpen(false);
+		} catch (error) {
+			alert(getInvalidValuesError(isAltEmpty, isHisEmpty, isAdiEmpty));
+		}
+	};
 
-          <div className="indicator his-indicator">
-            <div className="his-dial">
-              <span className="deg-0">0</span>
-              <span className="deg-90">90</span>
-              <span className="deg-180">180</span>
-              <span className="deg-270">270</span>
-            </div>
-            <div className="his-marker" >
-              <div className="arrow-up" ></div>
-            </div>
-            <div className="rotating-container" style={{ transform: `rotate(${data.his}deg)`}}>
-              <div className="rotating-arrow" ></div>
-              <div className="rotating-line"></div>
-            </div>
-          </div>
+	const getAdiColor = (adi: number) => {    
+		if(adi === 100)
+			return 'blue';
+		else if(adi === 0){
+			return 'lightgreen';
+		} else {
+			return 'white';
+		}
+	};
 
-          <div className="indicator adi-indicator" style={{ backgroundColor: getAdiColor(data.adi) }}>
-          </div>
-        </div>
-      )}
+	return (
+		<div className="App">
+			<header className="controls">
+				<button
+					id = { (viewMode === 'text') ? 'clicked-btn' : 'unclicked-btn' }
+					onClick={() => setViewMode('text')}>TEXT
+				</button>
+				<button
+					id = { (viewMode === 'visual') ? 'clicked-btn' : 'unclicked-btn' }
+					onClick={() => setViewMode('visual')}>VISUAL</button>
+				<button id='plus-btn' onClick={() => {
+					setFormData({
+						altitude: '',
+						his: '',
+						adi: ''
+					})
+					setIsDialogOpen(true);
+				}}>+</button>
+			</header>
 
-      {isDialogOpen && (
-        <div className="dialog-overlay">
-          <div className="dialog">
-            
-            <button className="close-btn" onClick={() => setIsDialogOpen(false)}>
-              <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#0095d1">
-                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
-              </svg>
-            </button>
+			{viewMode === 'text' && (
+				<div className="text-view">
+					<div className="text-card altitude-card"><h3>Altitude</h3><p>{data.altitude}</p></div>
+					<div className="text-card his-card"><h3>HIS</h3><p>{data.his}</p></div>
+					<div className="text-card adi-card"><h3>ADI</h3><p>{data.adi}</p></div>
+				</div>
+			)}
 
-            <h2>הזנת נתונים</h2>
-            <div className="input-group">
-              <label>Altitude</label>
-              <input 
-                type="number"
-                value={formData.altitude}
-                onChange={e => setFormData({...formData, altitude: e.target.value})} />
-            </div>
-            <div className="input-group">
-              <label>HIS</label>
-              <input
-                type="number"
-                value={formData.his}
-                onChange={e => setFormData({...formData, his: e.target.value})} />
-            </div>
-            <div className="input-group">
-              <label>ADI</label>
-              <input
-                type="number"
-                value={formData.adi}
-                onChange={e => setFormData({...formData, adi: e.target.value})} />
-            </div>
-            <button className="send-btn" onClick={handleSend}>עדכון</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+			{viewMode === 'visual' && (
+				<div className="visual-view">
+					<div className="indicator altitude-indicator">
+						<div className="alt-scale">
+							<span>3000</span><span>2000</span><span>1000</span><span>0</span>
+						</div>
+						<div className="alt-bar">
+							<div className="alt-marker" style={{ bottom: `${(data.altitude / 3000) * 100}%` }}>
+								<div className="arrow-right"></div>
+							</div>
+						</div>
+					</div>
+
+					<div className="indicator his-indicator">
+						<div className="his-dial">
+							<span className="deg-0">0</span>
+							<span className="deg-90">90</span>
+							<span className="deg-180">180</span>
+							<span className="deg-270">270</span>
+						</div>
+						<div className="his-marker" >
+							<div className="arrow-up" ></div>
+						</div>
+						<div className="rotating-container" style={{ transform: `rotate(${data.his}deg)`}}>
+							<div className="rotating-arrow" ></div>
+							<div className="rotating-line"></div>
+						</div>
+					</div>
+
+					<div className="indicator adi-indicator" style={{ backgroundColor: getAdiColor(data.adi) }}>
+					</div>
+				</div>
+			)}
+
+			{isDialogOpen && (
+				<div className="dialog-overlay">
+					<div className="dialog">
+						
+						<button className="close-btn" onClick={() => setIsDialogOpen(false)}>
+							<svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#0095d1">
+								<path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+							</svg>
+						</button>
+
+						<h2>הזנת נתונים</h2>
+						<div className="input-group">
+							<label>Altitude</label>
+							<input 
+								type="number"
+								value={formData.altitude}
+								onChange={e => setFormData({...formData, altitude: e.target.value})} />
+						</div>
+						<div className="input-group">
+							<label>HIS</label>
+							<input
+								type="number"
+								value={formData.his}
+								onChange={e => setFormData({...formData, his: e.target.value})} />
+						</div>
+						<div className="input-group">
+							<label>ADI</label>
+							<input
+								type="number"
+								value={formData.adi}
+								onChange={e => setFormData({...formData, adi: e.target.value})} />
+						</div>
+						<button className="send-btn" onClick={handleSend}>עדכון</button>
+					</div>
+				</div>
+			)}
+		</div>
+	);
 }
 
 export default App;

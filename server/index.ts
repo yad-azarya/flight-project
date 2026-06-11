@@ -40,9 +40,9 @@ app.get('/api/indicators/latest', async (req: Request, res: Response) => {
 
 
 
-const MONGO_URI = process.env.MONGO_URI || '';
+const MONGO_URI = "mongodb://127.0.0.1:27017/flight_monitor";
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 mongoose.connect(MONGO_URI)
   .then(() => {
